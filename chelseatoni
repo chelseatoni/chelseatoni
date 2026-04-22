@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio — Art Portfolio & Prints</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0f0e0c;
+    --paper: #f5f0e8;
+    --paper2: #ede8dc;
+    --accent: #c8391b;
+    --accent2: #e8a020;
+    --muted: #7a7066;
+    --border: rgba(15,14,12,0.15);
+    --display: 'Bebas Neue', sans-serif;
+    --serif: 'DM Serif Display', serif;
+    --body: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--body);
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s, background 0.2s;
+    mix-blend-mode: multiply;
+  }
+  .cursor.hover { width: 36px; height: 36px; background: var(--accent2); }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: var(--paper);
+    border-bottom: 1px solid var(--border);
+    mix-blend-mode: normal;
+  }
+  .nav-logo {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    padding: 120px 3rem 6rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: 'ART';
+    position: absolute;
+    font-family: var(--display);
+    font-size: 38vw;
+    color: var(--paper2);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .hero-text { position: relative; z-index: 2; }
+  .hero-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 32px; height: 1px;
+    background: var(--accent);
+  }
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(4rem, 8vw, 9rem);
+    line-height: 0.92;
+    letter-spacing: -0.01em;
+    margin-bottom: 2rem;
+  }
+  h1 em {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-desc {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 380px;
+    margin-bottom: 2.5rem;
+  }
+  .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.85rem 2rem;
+    font-family: var(--body);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1.5px solid var(--ink);
+    transition: all 0.25s;
+    cursor: none;
+  }
+  .btn-fill { background: var(--ink); color: var(--paper); }
+  .btn-fill:hover { background: var(--accent); border-color: var(--accent); }
+  .btn-outline:hover { background: var(--ink); color: var(--paper); }
+
+  .hero-image {
+    position: relative; z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 12px;
+  }
+  .hero-img-card {
+    background: var(--paper2);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    position: relative;
+  }
+  .hero-img-card:first-child {
+    grid-column: 1 / -1;
+    height: 280px;
+  }
+  .hero-img-card:nth-child(2),
+  .hero-img-card:nth-child(3) { height: 160px; }
+  .img-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--display);
+    font-size: 1.2rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Decorative art in placeholders */
+  .art-a { background: linear-gradient(135deg, #c8391b 0%, #e8a020 50%, #0f0e0c 100%); }
+  .art-b { background: repeating-linear-gradient(45deg, #0f0e0c 0, #0f0e0c 2px, #f5f0e8 2px, #f5f0e8 12px); }
+  .art-c { background: radial-gradient(circle at 30% 70%, #c8391b 0%, #7a3020 40%, #0f0e0c 100%); }
+
+  .img-label {
+    position: absolute; bottom: 12px; left: 14px;
+    font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+    background: var(--paper); color: var(--ink);
+    padding: 4px 10px;
+  }
+
+  /* SECTION STYLES */
+  section { padding: 7rem 3rem; }
+  .section-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 4rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.5rem;
+  }
+  .section-number {
+    font-family: var(--display);
+    font-size: 5rem;
+    color: var(--paper2);
+    line-height: 1;
+    margin-right: 1rem;
+  }
+  .section-title-group { flex: 1; }
+  .section-eyebrow {
+    font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 0.4rem;
+  }
+  h2 {
+    font-family: var(--display);
+    font-size: clamp(2.5rem, 4vw, 4.5rem);
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+  .section-link {
+    font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--ink); text-decoration: none;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .section-link:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* PORTFOLIO GRID */
+  #portfolio { background: var(--ink); color: var(--paper); }
+  #portfolio .section-number { color: rgba(245,240,232,0.06); }
+  #portfolio .section-eyebrow { color: var(--accent2); }
+  #portfolio h2 { color: var(--paper); }
+  #portfolio .section-link { color: var(--paper); border-color: var(--paper); }
+  #portfolio .section-link:hover { color: var(--accent2); border-color: var(--accent2); }
+  #portfolio .section-header { border-color: rgba(245,240,232,0.1); }
+
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 16px;
+  }
+  .portfolio-item {
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+  }
+  .portfolio-item:nth-child(1) { grid-column: 1 / 8; grid-row: 1; height: 420px; }
+  .portfolio-item:nth-child(2) { grid-column: 8 / 13; grid-row: 1; height: 420px; }
+  .portfolio-item:nth-child(3) { grid-column: 1 / 5; grid-row: 2; height: 300px; }
+  .portfolio-item:nth-child(4) { grid-column: 5 / 9; grid-row: 2; height: 300px; }
+  .portfolio-item:nth-child(5) { grid-column: 9 / 13; grid-row: 2; height: 300px; }
+
+  .portfolio-img {
+    width: 100%; height: 100%;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .portfolio-item:hover .portfolio-img { transform: scale(1.05); }
+
+  .portfolio-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(15,14,12,0.9) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 1.5rem;
+  }
+  .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+  .portfolio-overlay h3 {
+    font-family: var(--display);
+    font-size: 1.6rem;
+    letter-spacing: 0.05em;
+    color: var(--paper);
+    margin-bottom: 0.3rem;
+  }
+  .portfolio-overlay span {
+    font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent2);
+  }
+
+  /* Art palette variations */
+  .p1 { background: conic-gradient(from 180deg at 40% 60%, #c8391b, #e8a020, #2a5f4f, #0f0e0c, #c8391b); }
+  .p2 { background: repeating-conic-gradient(#0f0e0c 0deg 10deg, #c8391b 10deg 20deg); }
+  .p3 { background: radial-gradient(ellipse at 20% 80%, #e8a020, #c8391b, #2a1f1a); }
+  .p4 { background: linear-gradient(160deg, #2a5f4f 0%, #0f3028 40%, #c8391b 100%); }
+  .p5 { background: repeating-linear-gradient(-45deg, #f5f0e8, #f5f0e8 4px, #0f0e0c 4px, #0f0e0c 8px); }
+
+  /* SHOP */
+  .shop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+  .shop-card {
+    cursor: none;
+    position: relative;
+  }
+  .shop-card-img {
+    width: 100%; aspect-ratio: 3/4;
+    background: var(--paper2);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  .shop-card-img .portfolio-img {
+    width: 100%; height: 100%;
+    transition: transform 0.5s ease;
+  }
+  .shop-card:hover .portfolio-img { transform: scale(1.06); }
+  .shop-badge {
+    position: absolute; top: 12px; right: 12px;
+    background: var(--accent); color: var(--paper);
+    font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 4px 10px;
+  }
+  .shop-card-info { display: flex; justify-content: space-between; align-items: flex-start; }
+  .shop-card-title {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-style: italic;
+    margin-bottom: 0.2rem;
+  }
+  .shop-card-sub {
+    font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .shop-card-price {
+    font-family: var(--display);
+    font-size: 1.3rem;
+    letter-spacing: 0.05em;
+  }
+  .add-to-cart {
+    display: block; width: 100%;
+    margin-top: 1rem; padding: 0.75rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    font-family: var(--body);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    cursor: none;
+    transition: all 0.2s;
+  }
+  .add-to-cart:hover { background: var(--ink); color: var(--paper); }
+
+  /* ABOUT */
+  #about { background: var(--paper2); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 6rem;
+    align-items: center;
+  }
+  .about-img {
+    aspect-ratio: 4/5;
+    background: var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+  .about-img::after {
+    content: '';
+    position: absolute;
+    inset: 16px;
+    border: 1px solid rgba(245,240,232,0.2);
+    pointer-events: none;
+  }
+  .about-img-inner {
+    width: 100%; height: 100%;
+    background: conic-gradient(from 0deg at 60% 40%, #c8391b 0deg, #e8a020 90deg, #0f0e0c 180deg, #2a5f4f 270deg, #c8391b 360deg);
+    opacity: 0.8;
+  }
+  .about-photo-label {
+    position: absolute; top: -1px; left: 2rem;
+    background: var(--accent2); color: var(--ink);
+    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+    padding: 6px 14px;
+    font-weight: 500;
+  }
+  .about-content h2 { margin-bottom: 0.3rem; }
+  .about-name {
+    font-family: var(--serif);
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+  .about-bio {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+  .about-bio strong { color: var(--ink); font-weight: 500; }
+  .about-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+  }
+  .stat-num {
+    font-family: var(--display);
+    font-size: 2.5rem;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  /* CONTACT */
+  #contact { background: var(--ink); color: var(--paper); }
+  #contact .section-number { color: rgba(245,240,232,0.04); }
+  #contact .section-eyebrow { color: var(--accent2); }
+  #contact h2 { color: var(--paper); }
+  #contact .section-header { border-color: rgba(245,240,232,0.1); }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: start;
+  }
+  .contact-blurb {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--paper);
+    margin-bottom: 2.5rem;
+  }
+  .contact-details { display: flex; flex-direction: column; gap: 1.5rem; }
+  .contact-row {
+    display: flex; flex-direction: column; gap: 0.25rem;
+    border-bottom: 1px solid rgba(245,240,232,0.1);
+    padding-bottom: 1.5rem;
+  }
+  .contact-row-label {
+    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(245,240,232,0.4);
+  }
+  .contact-row-val {
+    font-size: 1rem;
+    color: var(--paper);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .contact-row-val:hover { color: var(--accent2); }
+  .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-field { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-field label {
+    font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: rgba(245,240,232,0.5);
+  }
+  .form-field input,
+  .form-field textarea,
+  .form-field select {
+    background: rgba(245,240,232,0.06);
+    border: 1px solid rgba(245,240,232,0.15);
+    color: var(--paper);
+    padding: 0.75rem 1rem;
+    font-family: var(--body);
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+  }
+  .form-field input::placeholder,
+  .form-field textarea::placeholder { color: rgba(245,240,232,0.3); }
+  .form-field input:focus,
+  .form-field textarea:focus { border-color: var(--accent2); }
+  .form-field select option { background: var(--ink); }
+  .btn-send {
+    display: inline-flex; align-items: center; gap: 0.75rem;
+    padding: 1rem 2.5rem;
+    background: var(--accent);
+    border: none;
+    color: var(--paper);
+    font-family: var(--body);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: none;
+    transition: background 0.25s, transform 0.15s;
+    margin-top: 0.5rem;
+    align-self: flex-start;
+  }
+  .btn-send:hover { background: var(--accent2); color: var(--ink); }
+  .btn-send:active { transform: scale(0.98); }
+  .arrow { font-size: 1rem; transition: transform 0.2s; }
+  .btn-send:hover .arrow { transform: translateX(4px); }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    border-top: 1px solid rgba(245,240,232,0.1);
+    padding: 2rem 3rem;
+    display: flex; justify-content: space-between; align-items: center;
+    color: rgba(245,240,232,0.4);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+  }
+  footer a { color: inherit; text-decoration: none; }
+  footer a:hover { color: var(--accent2); }
+  .footer-socials { display: flex; gap: 1.5rem; }
+
+  /* CART TOAST */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: var(--ink); color: var(--paper);
+    padding: 1rem 1.5rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.05em;
+    transform: translateY(120%);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 200;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .toast.show { transform: translateY(0); }
+  .toast-dot { width: 8px; height: 8px; background: var(--accent2); border-radius: 50%; flex-shrink: 0; }
+
+  /* CART ICON */
+  .cart-btn {
+    position: relative;
+    background: none; border: 1px solid var(--border);
+    padding: 0.5rem 0.9rem;
+    cursor: none;
+    display: flex; align-items: center; gap: 0.5rem;
+    font-family: var(--body);
+    font-size: 0.75rem; letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    transition: all 0.2s;
+  }
+  .cart-btn:hover { background: var(--ink); color: var(--paper); }
+  .cart-count {
+    background: var(--accent); color: var(--paper);
+    font-size: 0.6rem; font-weight: 500;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Fade-in animation */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 100px 1.5rem 4rem; }
+    .hero::before { font-size: 55vw; }
+    .hero-image { display: none; }
+    section { padding: 5rem 1.5rem; }
+    .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .about-img { aspect-ratio: 16/9; }
+    .portfolio-grid { grid-template-columns: 1fr 1fr; }
+    .portfolio-item { grid-column: auto !important; grid-row: auto !important; height: 200px !important; }
+    .form-row { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">STUDIO</a>
+  <ul class="nav-links">
+    <li><a href="#portfolio">Work</a></li>
+    <li><a href="#shop">Shop</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="cart-btn" onclick="toggleCart()" aria-label="Cart">
+    Cart <span class="cart-count" id="cartCount">0</span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-text fade-up">
+    <p class="hero-eyebrow">Artist & Designer</p>
+    <h1>Bold<br><em>Original</em><br>Work.</h1>
+    <p class="hero-desc">Paintings, illustrations, and graphic design with an unflinching point of view. Limited edition prints available to own.</p>
+    <div class="btn-group">
+      <a href="#portfolio" class="btn btn-fill">View Portfolio</a>
+      <a href="#shop" class="btn btn-outline">Shop Prints</a>
+    </div>
+  </div>
+  <div class="hero-image fade-up">
+    <div class="hero-img-card">
+      <div class="img-placeholder art-a"></div>
+      <span class="img-label">Featured Work</span>
+    </div>
+    <div class="hero-img-card">
+      <div class="img-placeholder art-b"></div>
+      <span class="img-label">Illustration</span>
+    </div>
+    <div class="hero-img-card">
+      <div class="img-placeholder art-c"></div>
+      <span class="img-label">Painting</span>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="section-header fade-up">
+    <span class="section-number">01</span>
+    <div class="section-title-group">
+      <p class="section-eyebrow">Selected Works</p>
+      <h2>Portfolio</h2>
+    </div>
+    <a href="#" class="section-link">All Works →</a>
+  </div>
+  <div class="portfolio-grid">
+    <div class="portfolio-item fade-up">
+      <div class="portfolio-img p1"></div>
+      <div class="portfolio-overlay">
+        <h3>Chromatic Study #7</h3>
+        <span>Acrylic on Canvas · 2024</span>
+      </div>
+    </div>
+    <div class="portfolio-item fade-up">
+      <div class="portfolio-img p2"></div>
+      <div class="portfolio-overlay">
+        <h3>Grid Break</h3>
+        <span>Digital Illustration · 2024</span>
+      </div>
+    </div>
+    <div class="portfolio-item fade-up">
+      <div class="portfolio-img p3"></div>
+      <div class="portfolio-overlay">
+        <h3>Descent</h3>
+        <span>Mixed Media · 2023</span>
+      </div>
+    </div>
+    <div class="portfolio-item fade-up">
+      <div class="portfolio-img p4"></div>
+      <div class="portfolio-overlay">
+        <h3>Verdant Layer</h3>
+        <span>Painting · 2023</span>
+      </div>
+    </div>
+    <div class="portfolio-item fade-up">
+      <div class="portfolio-img p5"></div>
+      <div class="portfolio-overlay">
+        <h3>Signal / Noise</h3>
+        <span>Graphic Design · 2024</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOP -->
+<section id="shop">
+  <div class="section-header fade-up">
+    <span class="section-number">02</span>
+    <div class="section-title-group">
+      <p class="section-eyebrow">Limited Editions</p>
+      <h2>Print Shop</h2>
+    </div>
+    <a href="#" class="section-link">All Prints →</a>
+  </div>
+  <div class="shop-grid">
+    <div class="shop-card fade-up">
+      <div class="shop-card-img">
+        <div class="portfolio-img p1" style="height:100%"></div>
+        <span class="shop-badge">Ed. of 50</span>
+      </div>
+      <div class="shop-card-info">
+        <div>
+          <p class="shop-card-title">Chromatic Study #7</p>
+          <p class="shop-card-sub">18×24" · Giclée</p>
+        </div>
+        <span class="shop-card-price">$120</span>
+      </div>
+      <button class="add-to-cart" onclick="addToCart(this, 'Chromatic Study #7')">Add to Cart</button>
+    </div>
+    <div class="shop-card fade-up">
+      <div class="shop-card-img">
+        <div class="portfolio-img p3" style="height:100%"></div>
+        <span class="shop-badge">Ed. of 30</span>
+      </div>
+      <div class="shop-card-info">
+        <div>
+          <p class="shop-card-title">Descent</p>
+          <p class="shop-card-sub">12×16" · Giclée</p>
+        </div>
+        <span class="shop-card-price">$85</span>
+      </div>
+      <button class="add-to-cart" onclick="addToCart(this, 'Descent')">Add to Cart</button>
+    </div>
+    <div class="shop-card fade-up">
+      <div class="shop-card-img">
+        <div class="portfolio-img p4" style="height:100%"></div>
+      </div>
+      <div class="shop-card-info">
+        <div>
+          <p class="shop-card-title">Verdant Layer</p>
+          <p class="shop-card-sub">24×32" · Giclée</p>
+        </div>
+        <span class="shop-card-price">$195</span>
+      </div>
+      <button class="add-to-cart" onclick="addToCart(this, 'Verdant Layer')">Add to Cart</button>
+    </div>
+    <div class="shop-card fade-up">
+      <div class="shop-card-img">
+        <div class="portfolio-img p2" style="height:100%"></div>
+        <span class="shop-badge">Sold Out</span>
+      </div>
+      <div class="shop-card-info">
+        <div>
+          <p class="shop-card-title">Grid Break</p>
+          <p class="shop-card-sub">18×24" · Risograph</p>
+        </div>
+        <span class="shop-card-price">$75</span>
+      </div>
+      <button class="add-to-cart" style="opacity:0.4; pointer-events:none">Sold Out</button>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header fade-up">
+    <span class="section-number">03</span>
+    <div class="section-title-group">
+      <p class="section-eyebrow">The Artist</p>
+      <h2>About</h2>
+    </div>
+  </div>
+  <div class="about-grid">
+    <div class="about-img fade-up">
+      <div class="about-img-inner"></div>
+      <span class="about-photo-label">Studio, 2024</span>
+    </div>
+    <div class="about-content fade-up">
+      <h2>Your Name</h2>
+      <p class="about-name">Painter · Illustrator · Graphic Designer</p>
+      <p class="about-bio">
+        Based in <strong>New York City</strong>, I work across painting, digital illustration, and graphic design — making work that refuses to be polite. My practice draws from <strong>street culture, abstract expressionism, and systems thinking</strong>, colliding mediums until something unexpected surfaces.
+      </p>
+      <p class="about-bio">
+        Commissions open. I work with <strong>brands, galleries, and private collectors</strong> who want something that actually says something.
+      </p>
+      <div class="about-stats">
+        <div>
+          <div class="stat-num">8+</div>
+          <div class="stat-label">Years active</div>
+        </div>
+        <div>
+          <div class="stat-num">200+</div>
+          <div class="stat-label">Prints sold</div>
+        </div>
+        <div>
+          <div class="stat-num">40+</div>
+          <div class="stat-label">Exhibitions</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header fade-up">
+    <span class="section-number">04</span>
+    <div class="section-title-group">
+      <p class="section-eyebrow">Get In Touch</p>
+      <h2>Contact</h2>
+    </div>
+  </div>
+  <div class="contact-grid">
+    <div class="fade-up">
+      <p class="contact-blurb">"Every commission starts with a conversation. Let's make something worth talking about."</p>
+      <div class="contact-details">
+        <div class="contact-row">
+          <span class="contact-row-label">Email</span>
+          <a href="mailto:hello@yourstudio.com" class="contact-row-val">hello@yourstudio.com</a>
+        </div>
+        <div class="contact-row">
+          <span class="contact-row-label">Instagram</span>
+          <a href="#" class="contact-row-val">@yourstudio</a>
+        </div>
+        <div class="contact-row">
+          <span class="contact-row-label">Based in</span>
+          <span class="contact-row-val">New York City, USA</span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-row-label">Response time</span>
+          <span class="contact-row-val">Within 48 hours</span>
+        </div>
+      </div>
+    </div>
+    <form class="contact-form fade-up" onsubmit="handleSubmit(event)">
+      <div class="form-row">
+        <div class="form-field">
+          <label>Name</label>
+          <input type="text" placeholder="Your name" required>
+        </div>
+        <div class="form-field">
+          <label>Email</label>
+          <input type="email" placeholder="your@email.com" required>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Inquiry type</label>
+        <select>
+          <option value="">Select…</option>
+          <option>Commission</option>
+          <option>Print purchase</option>
+          <option>Exhibition / collaboration</option>
+          <option>Press / media</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Message</label>
+        <textarea rows="5" placeholder="Tell me about your project…" required></textarea>
+      </div>
+      <button type="submit" class="btn-send">Send Message <span class="arrow">→</span></button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2026 Studio. All rights reserved.</span>
+  <div class="footer-socials">
+    <a href="#">Instagram</a>
+    <a href="#">Behance</a>
+    <a href="#">Are.na</a>
+    <a href="#">Newsletter</a>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-dot"></span>
+  <span id="toastMsg">Added to cart</span>
+</div>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, button, .portfolio-item, .shop-card').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+  });
+
+  // Scroll fade-in
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Cart
+  let cartCount = 0;
+  function addToCart(btn, name) {
+    cartCount++;
+    document.getElementById('cartCount').textContent = cartCount;
+    btn.textContent = 'Added ✓';
+    btn.style.background = 'var(--ink)';
+    btn.style.color = 'var(--paper)';
+    setTimeout(() => {
+      btn.textContent = 'Add to Cart';
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 2000);
+    showToast(name + ' added to cart');
+  }
+
+  let toastTimer;
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  function toggleCart() { showToast(cartCount === 0 ? 'Your cart is empty' : cartCount + ' item(s) in cart'); }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.btn-send');
+    btn.textContent = 'Message sent ✓';
+    btn.style.background = '#2a5f4f';
+    setTimeout(() => {
+      btn.innerHTML = 'Send Message <span class="arrow">→</span>';
+      btn.style.background = '';
+      e.target.reset();
+    }, 3000);
+  }
+</script>
+</body>
+</html>
